@@ -1,0 +1,151 @@
+{% extends "furever_app/home.html" %} 
+{% block content %}
+
+<script>
+  // Wait for the document to be fully loaded before executing the script
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+      // Initially hide the "other" breed input field and the cat breed dropdown
+      document.getElementById("other_text").style.display = "none";
+      document.getElementById("breeds_cat").style.display = "none";
+
+      // Select all radio buttons
+      const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+      // Add event listeners for each radio button 
+      radioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("change", function (event) {
+          // Get the selected value of the clicked radio button
+          const selectedOption = event.target.value;
+
+          // Display corresponding breed dropdown based on pet category
+          if (selectedOption === "dog") {
+            document.getElementById("breeds_dog").style.display = "inline";
+            document.getElementById("breeds_cat").style.display = "none";
+          } else {
+            document.getElementById("breeds_cat").style.display = "inline";
+            document.getElementById("breeds_dog").style.display = "none";
+          }
+        });
+      });
+
+      // Handle breed selection for dogs
+      drop_ref_dog = document.getElementById("breeds_dog");
+      drop_ref_dog.addEventListener("change", function (event) {
+        var selectedOption = event.target.value;
+
+        // If the "Other" option is selected, display the text input for other breeds
+        if (selectedOption === "other_drop") {
+          document.getElementById("other_text").style.display = "inline";
+        } else {
+          document.getElementById("other_text").style.display = "none";
+        }
+      });
+
+      // Handle breed selection for cats
+      drop_ref_cat = document.getElementById("breeds_cat");
+      drop_ref_cat.addEventListener("change", function (event) {
+        var selectedOption = event.target.value;
+
+        // If the "Other" option is selected, display the text input for other breeds
+        if (selectedOption === "other_drop") {
+          document.getElementById("other_text").style.display = "inline";
+        } else {
+          document.getElementById("other_text").style.display = "none";
+        }
+      });
+    },
+    false
+  );
+</script>
+
+<h2>Add Lost Pets</h2>
+
+<!-- Form to add a lost pet -->
+<form method="POST" enctype="multipart/form-data" action="{% url 'lost_add' %}">
+  {% csrf_token %}
+
+  <!-- Pet category selection: Dog or Cat -->
+  <span>Select pet category :</span><br />
+  <input type="radio" id="dog" name="categ" value="dog" checked required />
+  <label for="dog">Dog</label><br />
+  <input type="radio" id="cat" name="categ" value="cat" required />
+  <label for="cat">Cat</label><br /><br />
+
+  <!-- Breed selection for dog and cat -->
+  <label for="breeds">Breed</label><br />
+
+  <!-- Dog breed options -->
+  <select name="breeds_dog" id="breeds_dog" required>
+    <option value="Indian Pariah" selected="selected">Indian Pariah</option>
+    <option value="Labrador">Labrador</option>
+    <option value="German Shepherd">German Shepherd</option>
+    <option value="Golden Retriever">Golden Retriever</option>
+    <option value="Pomeranian">Pomeranian</option>
+    <option value="Dachshund">Dachshund</option>
+    <option value="Beagle">Beagle</option>
+    <option value="Boxer">Boxer</option>
+    <option value="Pug">Pug</option>
+    <option value="Dalmatian">Dalmatian</option>
+    <option value="Indian Spitz">Indian Spitz</option>
+    <option value="Rajapalayam">Rajapalayam</option>
+    <option value="other_drop">Other</option>
+  </select>
+
+  <!-- Cat breed options -->
+  <select name="breeds_cat" id="breeds_cat" required>
+    <option value="Indian Shorthair" selected="selected">Indian Shorthair</option>
+    <option value="Persian">Persian</option>
+    <option value="Siamese">Siamese</option>
+    <option value="Maine Coon">Maine Coon</option>
+    <option value="Bengal">Bengal</option>
+    <option value="British Shorthair">British Shorthair</option>
+    <option value="Sphynx">Sphynx</option>
+    <option value="Ragdoll">Ragdoll</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <!-- Other breed input field (visible if "Other" is selected in breed dropdown) -->
+  <input
+    type="text"
+    id="other_text"
+    name="other_text"
+    placeholder="Enter other breed"
+  />
+
+  <br id="br1" /><br id="br2" />
+
+  <!-- Color of the pet -->
+  <label for="color">Color</label><br />
+  <input type="text" id="color" name="color" value="Black" required /><br /><br />
+
+  <!-- Name of the pet, if found in collar or name tag -->
+  <label for="name">Name found in collar/name tag? (if any)</label><br />
+  <input type="text" id="name" name="pet_name" value="Joe" required /><br /><br />
+
+  <!-- Location where the pet was lost -->
+  <label for="place">Where the pet was lost?</label><br />
+  <input type="text" id="place" name="place" value="Chennai" required /><br /><br />
+
+  <!-- Date when the pet was lost -->
+  <label for="date">When was the pet lost?</label><br />
+  <input type="date" id="date" name="date" value="" required /><br /><br />
+
+  <!-- Upload image of the lost pet -->
+  <label for="img">Upload image</label><br />
+  <input
+    type="file"
+    id="img"
+    name="pet_pic"
+    accept="image/*"
+    required
+  /><br /><br />
+
+  <!-- Submit button to submit the form -->
+  <input type="submit" id="submit_btn" value="Submit" />
+</form>
+
+{% endblock %}
+
+

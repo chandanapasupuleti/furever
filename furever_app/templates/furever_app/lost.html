@@ -1,0 +1,107 @@
+{% extends "furever_app/home.html" %} {% block content %}
+<h2>Lost Pets</h2>
+
+<style>
+  /* General styles for the container */
+  .flex-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    justify-content: flex-start; /* Align items to the left */
+    margin: 20px; /* Margin around the container */
+  }
+
+  /* Styles for each pet item */
+  .item {
+    flex: 0 0 calc(30% - 20px); /* Three items per row with some margin */
+    margin: 10px; /* Margin between items */
+    padding: 15px; /* Inner padding */
+    border: 1px solid #ccc; /* Border around each item */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s; /* Smooth hover effect */
+  }
+
+  /* Hover effect for item */
+  .item:hover {
+    transform: scale(1.05); /* Slightly enlarge the item on hover */
+  }
+
+  /* Styles for images */
+  .item img {
+    width: 100%; /* Make images fill their container */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 4px; /* Rounded corners for images */
+  }
+
+  /* Styles for pet details */
+  .details {
+    padding-top: 10px; /* Spacing above details */
+    text-align: left; /* Left-align text */
+  }
+
+  /* General text styles */
+  p {
+    margin: 5px 0; /* Margin for paragraph spacing */
+    color: black; /* Set text color to black */
+  }
+
+  /* Link styles */
+  a {
+    text-decoration: none; /* Remove underline */
+    color: black; /* Set link color to black */
+    font-weight: bold; /* Bold link */
+  }
+
+  a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .item {
+      flex: 0 0 calc(45% - 20px); /* Two items per row on smaller screens */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .item {
+      flex: 0 0 calc(100% - 20px); /* One item per row on very small screens */
+    }
+  }
+</style>
+
+
+<!-- Link to add a new lost pet -->
+<a href="add_lost">Add new lost pet</a>
+
+<!-- Flex container to hold all lost pet items -->
+<div class="flex-container">
+  <!-- Loop through each pet in the lost_pets list -->
+  {% for pet in lost_pets %}
+  
+  <!-- Each lost pet is wrapped in a div with the class "item" for styling -->
+  <div class="item">
+    
+    <!-- Display the pet's image, decoded from Base64 format -->
+    <img src="data:image/jpeg;base64,{{ pet.5 }}" alt="pet_img" id="pet_img" width="150px" height="150px" />
+    
+    <!-- Link to view more details about the lost pet, passing the pet ID -->
+    <a href="lost/{{ pet.0 }}">
+    
+      <!-- Details of the lost pet such as category, breed, color, and place -->
+      <div class="details">
+        <p>Category: {{ pet.1 }}</p> <!-- Display the pet's category (e.g., dog, cat) -->
+        <p>Breed: {{ pet.2 }}</p>    <!-- Display the pet's breed -->
+        <p>Color: {{ pet.3 }}</p>    <!-- Display the pet's color -->
+        <p>Place: {{ pet.4 }}</p>    <!-- Display the place where the pet was lost -->
+      </div>
+      
+    </a>
+  </div>
+  
+  <!-- End of pet loop -->
+  {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Logtin</title>
+  </head>
+  <body>
+    <!-- The form for logging in a user -->
+<form action="/furever/login_func" method="post">
+  {% csrf_token %}
+  <label for="username">Username</label>
+  <input type="text" id="username" name="username">
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password">
+  <!-- Link to the login page, with a 'next' query parameter to redirect after successful login -->
+  <a href="{% url 'login_page' %}?next={{request.path}}">Login</a>
+  <button name="login_button">Login</button>
+</form>
+  </body>
+</html>

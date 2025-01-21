@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: furever_dataa
+      MYSQL_USER: django_user
+      MYSQL_PASSWORD: Ch@sql_ha10
+      MYSQL_ROOT_PASSWORD: mypassword
+    ports:
+      - "3307:3306"  # Expose MySQL port
+
+  web:
+    build: .
+    command: bash -c 'while !</dev/tcp/db/3306; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_DATABASE: furever_dataa
+      MYSQL_USER: django_user
+      MYSQL_PASSWORD: Ch@sql_ha10
+      MYSQL_HOST: db  # Point to the db service
+    depends_on:
+      - db

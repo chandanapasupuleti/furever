@@ -1,0 +1,16 @@
+{% extends "furever_app/home.html" %} {% block content %}
+<h2>Forum</h2>
+<h3>New Post</h3>
+<!-- Form to create a new post -->
+<form method="post" enctype="multipart/form-data">
+    <!-- CSRF Token for security -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    {{ err }}
+    <!-- Submit button for the form -->
+    <button type="submit" id="submit_btn">Post</button>
+</form>
+{% endblock %}
+
+

@@ -1,0 +1,54 @@
+{% extends "furever_app/home.html" %} 
+
+{% block content %}  
+
+<h2>{{posts.post_title}}</h2>
+
+<!-- Display the description of the post -->
+<p>{{posts.post_description}}</p>
+
+<!-- Check if there is a pet picture for the post -->
+{% if posts.pet_pic %}
+    <!-- Display the pet picture as an image if it exists -->
+    <div><img src="data:image/jpeg;base64,{{posts.pet_pic}}" alt="pet_img" id="pet_img" width="150px" height="150px" /><br></div>
+{% endif %}
+
+<!-- Section for displaying comments -->
+<div>
+    <h3>Comments</h3>
+</div>
+
+<!-- Loop through all the comments associated with this post -->
+{% for comment in comments %}
+    <div name="comments">
+        <!-- Display the username of the person who posted the comment -->
+        <section id="cmnt_name">{{ comment.comment_username }}</section>
+
+        <!-- Display the date when the comment was posted -->
+        <section><small>{{comment.comment_date}}</small></section>
+
+        <!-- Display the content of the comment -->
+        <section>{{comment.comment_description}}</section>
+    </div><br>
+{% empty %}
+    <!-- If no comments exist, show this message -->
+    <div><p>No items found.</p></div>
+{% endfor %}
+
+<!-- Form for adding a new comment -->
+<div>
+    <!-- The form submits the comment to the 'add_comment' view for this specific post -->
+    <form method="post" action="{% url 'add_comment' id=posts.id %}">
+        {% csrf_token %} 
+        
+        <!-- Textarea for the user to add their comment -->
+        <textarea name="add_comment" id="add_comment" placeholder="Add your comments here.."></textarea>
+        
+        <!-- Submit button to post the comment -->
+        <input type="submit" name="submit_comment_button">
+    </form>
+</div>
+
+</div>
+
+{% endblock %} 

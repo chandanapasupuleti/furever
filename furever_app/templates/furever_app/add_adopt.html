@@ -1,0 +1,192 @@
+{% extends "furever_app/home.html" %}  
+{% block content %}  
+
+<script>
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+      // Initially hide the "other" text and breed selection for cats
+      document.getElementById("other_text").style.display = "none";
+      document.getElementById("breeds_cat").style.display = "none";
+
+      // Get all radio buttons for pet category selection
+      const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+      // Event listener for radio button changes (dog or cat selection)
+      radioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("change", function (event) {
+          const selectedOption = event.target.value;
+
+          // If dog is selected, show dog breeds and hide cat breeds
+          if (selectedOption === "dog") {
+            document.getElementById("breeds_dog").style.display = "inline";
+            document.getElementById("breeds_cat").style.display = "none";
+          } else {
+            // If cat is selected, show cat breeds and hide dog breeds
+            document.getElementById("breeds_cat").style.display = "inline";
+            document.getElementById("breeds_dog").style.display = "none";
+          }
+        });
+      });
+
+      // Event listener for changes in dog breed selection
+      drop_ref_dog = document.getElementById("breeds_dog");
+      drop_ref_dog.addEventListener("change", function (event) {
+        var selectedOption = event.target.value;
+
+        // If "other" breed is selected, show the "other breed" text input
+        if (selectedOption === "other_drop") {
+          document.getElementById("other_text").style.display = "inline";
+        } else {
+          document.getElementById("other_text").style.display = "none";
+        }
+      });
+
+      // Event listener for changes in cat breed selection
+      drop_ref_cat = document.getElementById("breeds_cat");
+      drop_ref_cat.addEventListener("change", function (event) {
+        var selectedOption = event.target.value;
+
+        // If "other" breed is selected, show the "other breed" text input
+        if (selectedOption === "other_drop") {
+          document.getElementById("other_text").style.display = "inline";
+        } else {
+          document.getElementById("other_text").style.display = "none";
+        }
+      });
+    },
+    false
+  );
+</script>
+
+<h2>Add Adopt Pets</h2>
+<form method="POST" enctype="multipart/form-data" action="{% url 'adopt_add' %}">
+  {% csrf_token %}
+  
+  <!-- Pet category selection (dog or cat) -->
+  <span>Select pet category :</span><br />
+  <input type="radio" id="dog" name="categ" value="dog" checked required />
+  <label for="dog">Dog</label><br />
+  <input type="radio" id="cat" name="categ" value="cat" required />
+  <label for="cat">Cat</label><br /><br />
+
+  <!-- Breed selection for dog -->
+  <label for="breeds">Breed</label><br />
+  <select name="breeds_dog" id="breeds_dog" required>
+    <option value="Indian Pariah" selected="selected">Indian Pariah</option>
+    <option value="Labrador">Labrador</option>
+    <option value="German Shepherd">German Shepherd</option>
+    <option value="Golden Retriever">Golden Retriever</option>
+    <option value="Pomeranian">Pomeranian</option>
+    <option value="Dachshund">Dachshund</option>
+    <option value="Beagle">Beagle</option>
+    <option value="Boxer">Boxer</option>
+    <option value="Pug">Pug</option>
+    <option value="Dalmatian">Dalmatian</option>
+    <option value="Indian Spitz">Indian Spitz</option>
+    <option value="Rajapalayam">Rajapalayam</option>
+    <option value="other_drop">Other</option>
+  </select>
+
+  <!-- Breed selection for cat -->
+  <select name="breeds_cat" id="breeds_cat" required>
+    <option value="Indian Shorthair" selected="selected">Indian Shorthair</option>
+    <option value="Persian">Persian</option>
+    <option value="Siamese">Siamese</option>
+    <option value="Maine Coon">Maine Coon</option>
+    <option value="Bengal">Bengal</option>
+    <option value="British Shorthair">British Shorthair</option>
+    <option value="Sphynx">Sphynx</option>
+    <option value="Ragdoll">Ragdoll</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <!-- Input for other breed, displayed when "Other" option is selected -->
+  <input
+    type="text"
+    id="other_text"
+    name="other_text"
+    placeholder="Enter other breed"
+  />
+  <br id="br1" /><br id="br2" />
+  
+  <!-- Pet's name input -->
+  <label for="name">Name (if any)</label><br />
+  <input type="text" id="name" name="pet_name" value="Snoopy" required /><br /><br />
+  
+  <!-- Gender selection (Male or Female) -->
+  <label for="Gender">Gender</label><br />
+  <select name="Gender" id="pet_gender" required>
+    <option value="M" selected="selected">Male</option>
+    <option value="F">Female</option>
+  </select><br/><br/>
+  
+  <!-- Color input -->
+  <label for="color">Color</label><br />
+  <input type="text" id="color" name="color" value="Black" required /><br /><br />
+  
+  <!-- Age input (in months) -->
+  <label for="age">Age in months</label><br />
+  <input type="text" id="age" name="age" value="2" required /><br /><br />
+  
+  <!-- Weight input (in kg) -->
+  <label for="weight">Weight (kg)</label><br />
+  <input type="text" id="weight" name="weight" value="2" required /><br /><br />
+  
+  <!-- Date of last vaccination -->
+  <label for="vaccination">When was the pet vaccinated?</label><br />
+  <input type="date" id="vaccination" name="last_vaccinated_date" required /><br /><br />
+  
+  <!-- Health issues input -->
+  <label for="health_issues">Any known health issues?</label><br />
+  <input type="text" id="health_issues" name="health_issues" value="none" required /><br /><br />
+  
+  <!-- Behavior with people -->
+  <label for="Behavior_people">Behavior with people?</label><br />
+  <select name="Behavior_people" id="Behavior_people" required>
+    <option value="Friendly">Friendly</option>
+    <option value="Aggressive">Aggressive</option>
+    <option value="Neutral" selected="selected">Neutral</option>
+  </select><br/><br/>
+
+  <!-- Behavior with other animals -->
+  <label for="Behavior_animals">Behavior with other animals</label><br />
+  <select name="Behavior_animals" id="Behavior_animals" required>
+    <option value="Friendly">Friendly</option>
+    <option value="Aggressive">Aggressive</option>
+    <option value="Neutral" selected="selected">Neutral</option>
+  </select><br/><br/>
+  
+  <!-- Any trainings given to the pet -->
+  <label for="Trainings">Any trainings given?</label><br />
+  <input type="text" id="Trainings" name="Trainings" value="No" required /><br /><br />
+  
+  <!-- Favorite activities input -->
+  <label for="Activities">Favorite activities</label><br />
+  <textarea id="Activities" name="Activities" required>Loves to play with ball</textarea><br /><br />
+  
+  <!-- Energy level selection -->
+  <label for="Energy_level">Energy Level</label><br />
+  <select name="Energy_level" id="Energy_level" required>
+    <option value="Active">Active</option>
+    <option value="Hyperactive">Hyperactive</option>
+    <option value="Neutral" selected="selected">Neutral</option>
+    <option value="Lazy">Lazy</option>
+  </select><br/><br/>
+  
+  <!-- Previous ownership selection -->
+  <label for="prev_owner">Previous ownership</label><br />
+  <select name="prev_owner" id="prev_owner" required>
+    <option value="Y">Yes</option>
+    <option value="N">No</option>
+  </select><br/><br/>
+
+  <!-- Image upload for pet -->
+  <label for="img">Upload image</label><br />
+  <input type="file" id="img" name="pet_pic" accept="image/*" required /><br /><br />
+  
+  <!-- Submit button -->
+  <input type="submit" id="submit_btn" value="Submit" />
+</form>
+
+{% endblock %}

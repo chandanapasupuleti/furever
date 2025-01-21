@@ -1,0 +1,272 @@
+{% extends "furever_app/home.html" %}
+
+{% block content %}
+<!-- Main content block for the "Found Pets" page -->
+
+<h2>Found Pets</h2>
+
+<style>
+  /* Styling for anchor tags (links) */
+  a {
+    color: black !important; /* Forces the link color to black */
+  }
+
+  /* General styles for the form */
+  form {
+    width: 800px; /* Set a fixed width for the form */
+    margin: 20px 0; /* Adds margin on top and bottom */
+    padding: 20px; /* Padding inside the form */
+    border: 1px solid #ccc; /* Light border for form definition */
+    border-radius: 8px; /* Rounded corners for the form */
+    background-color: #f9f9f9; /* Light background color for the form */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for the form */
+    float: left; /* Align form to the left of the page */
+  }
+  
+  /* Styling for tables */
+  table {
+    border-collapse: collapse; /* Collapses table borders */
+    width: 100%; /* Set table width to 100% for better responsiveness */
+    margin: 20px 0; /* Margin on top and bottom of the table */
+  }
+
+  td {
+    padding: 10px; /* Padding inside table cells */
+  }
+
+  th, td {
+    text-align: left; /* Align text to the left in table cells */
+    border: 1px solid grey; /* Border for table cells */
+  }
+
+  th {
+    background-color: #f2f2f2; /* Light background color for table headers */
+  }
+
+  /* Style for breed dropdown (select) elements */
+  select {
+    width: 100%; /* Ensure the select fields take up full width */
+    padding: 8px; /* Add some padding for better visuals */
+    font-size: 16px; /* Make the font readable */
+    box-sizing: border-box; /* Ensure padding doesn't affect the width */
+  }
+
+  /* Media query for responsiveness */
+  @media (max-width: 600px) {
+    form {
+      width: 100%; /* Make the form responsive on smaller screens */
+      padding: 15px; /* Reduced padding for smaller screens */
+    }
+  
+    input[type="submit"] {
+      font-size: 14px; /* Smaller font size for submit buttons */
+    }
+  
+    table {
+      width: 100%; /* Make table full width on small screens */
+    }
+
+    td, th {
+      font-size: 14px; /* Smaller text for table data and headers on small screens */
+    }
+  }
+</style>
+
+<script>
+  // JavaScript for handling radio buttons and form display
+  document.addEventListener("DOMContentLoaded", function () {
+    view_func() // Initialize the page with the "view" form
+    
+    // Attach change event to radio buttons for dog/cat selection
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(function (radioButton) {
+      radioButton.addEventListener("change", function (event) {
+        const selectedOption = event.target.value;
+        if (selectedOption === "dog") {
+          document.getElementById("breeds_dog").style.display = "inline";  // Show dog breed select box
+          document.getElementById("breeds_cat").style.display = "none";    // Hide cat breed select box
+          document.getElementById("breeds_dog").value = 'Indian Pariah';   // Set default dog breed
+        } else {
+          document.getElementById("breeds_cat").style.display = "inline";  // Show cat breed select box
+          document.getElementById("breeds_dog").style.display = "none";    // Hide dog breed select box
+          document.getElementById("breeds_cat").value = 'Indian Shorthair'; // Set default cat breed
+        }
+      });
+    });
+
+    // Initialize form display based on the currently selected category (dog or cat)
+    if (document.getElementById('dog').checked) {
+      document.getElementById("breeds_dog").style.display = "inline";
+      document.getElementById("breeds_cat").style.display = "none";
+    } else if (document.getElementById('cat').checked) {
+      document.getElementById("breeds_cat").style.display = "inline";
+      document.getElementById("breeds_dog").style.display = "none";
+    }
+  });
+
+  // Function to format the date in YYYY-MM-DD format
+  function formatDate(inputDate) {
+    var dateObj = new Date(inputDate);
+    var year = dateObj.getFullYear();
+    var month = ('0' + (dateObj.getMonth() + 1)).slice(-2);  // Adjust months (0-11) to (01-12)
+    var day = ('0' + dateObj.getDate()).slice(-2);  // Add leading zero to days
+
+    return year + '-' + month + '-' + day;
+  }
+
+  // Function to display the "edit" form
+  function edit_func() {
+    document.getElementById("view_form").style.display = "none";  // Hide the "view" form
+    document.getElementById("edit_form").style.display = "block"; // Show the "edit" form
+
+    // Populate form fields with existing data
+    document.getElementById("date_time").value = formatDate('{{details.5}}'); // Format and set the date field
+    document.getElementById('{{details.0}}').checked = true; // Check the appropriate radio button (dog or cat)
+    
+    // Show or hide breed selection based on selected category (dog or cat)
+    if (document.getElementById('dog').checked) {
+      document.getElementById("breeds_dog").style.display = "inline";
+      document.getElementById("breeds_cat").style.display = "none";
+    } else if (document.getElementById('cat').checked) {
+      document.getElementById("breeds_cat").style.display = "inline";
+      document.getElementById("breeds_dog").style.display = "none";
+    }
+    
+    // Set breed fields based on the selected breed
+    document.getElementById("breeds_dog").value = '{{details.1}}';
+    document.getElementById("breeds_cat").value = '{{details.1}}';
+    
+    // Show the update button
+    document.getElementById("update_button").style.display = "inline";
+  }
+
+  // Function to display the "view" form
+  function view_func() {
+    document.getElementById("edit_form").style.display = "none"; // Hide the "edit" form
+    document.getElementById("view_form").style.display = "block"; // Show the "view" form
+    document.getElementById("update_button").style.display = "none"; // Hide the update button
+  }
+</script>
+
+<style>
+    /* Table styling for consistent padding and layout */
+    td {
+      padding: 10px;
+    }
+
+    table {
+      border-collapse: collapse; /* Collapses table borders */
+      width: 50%; /* Table width */
+      margin: 0; /* No margin */
+    }
+  
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid grey;
+    }
+  
+    th {
+      background-color: #f2f2f2; /* Light background color for table headers */
+    }
+</style>
+
+<!-- Conditional rendering based on user status and ownership -->
+{% if details.8 == details.9 %}
+  <!-- Buttons for view/edit actions if the current user is the owner -->
+  <button id="view" onclick="view_func()">View</button>
+  <button id="edit" onclick="edit_func()">Edit</button>
+{% else %}
+  <!-- Conditional forms for users who are not the owner -->
+  {% if details.10 == 'n' %}
+    <!-- Form for showing interest in the pet if user hasn't marked as found -->
+    <form id="found_form" method="POST" action="{% url 'found_update' id=details.7 %}">
+      {% csrf_token %}
+      <input type="text" hidden id="ifound_id" name="ifound_id" value={{details.7}}>
+      <input type="text" hidden id="ifound_username" name="ifound_username" value={{details.9}}>
+      <input type="text" hidden id="posted_owner" name="posted_owner" value={{details.8}}>
+      <button type='submit' name='submit_btn' id="found_btn" value="I found">My Pet</button>
+    </form>
+  {% else %}
+    <!-- Form to undo the interest if the user has already shown interest -->
+    <form id="undointerest_form" method="POST" action="{% url 'found_update' id=details.7 %}">
+      {% csrf_token %}
+      <button type='submit' id="undointerest_btn" value="Undo Interested">Undo my pet</button>
+    </form>
+  {% endif %}
+{% endif %}
+
+<!-- View form for displaying pet details -->
+<form id='view_form'>
+    <img src="data:image/jpeg;base64,{{ details.6 }}" alt="pet_img" id="pet_img" width="150px" height="150px" /><br><br>
+    <table>
+      <tbody>
+        <tr><td>Category</td><td>{{details.0}}</td></tr>
+        <tr><td>Breed</td><td>{{details.1}}</td></tr>
+        <tr><td>Color</td><td>{{ details.2 }}</td></tr>
+        <tr><td>Name</td><td>{{ details.3 }}</td></tr>
+        <tr><td>Location</td><td>{{ details.4 }}</td></tr>
+        <tr><td>date_time</td><td>{{ details.5 }}</td></tr>
+      </tbody>
+    </table>
+    <p>Posted by {{details.8}}</p>
+</form>
+
+<!-- Edit form for users to update pet details if they are the owner -->
+{% if details.8 == details.9 %}
+  <form id="edit_form" method="POST" enctype="multipart/form-data" action="{% url 'found_update' id=details.7 %}">
+    {% csrf_token %}
+    <img src="data:image/jpeg;base64,{{ details.6 }}" alt="pet_img" id="pet_img" width="150px" height="150px" /><br><br>
+    <input type="file" id="pet_pic" name="pet_pic">
+    <table>
+        <tbody>
+            <!-- Various input fields for pet details -->
+            <tr><td>Category</td><td>
+              <input type="radio" id="dog" name="categ" value="dog" {% if details.0 == 'dog' %} checked {% endif %} />
+              <label for="dog">Dog</label>
+              <input type="radio" id="cat" name="categ" value="cat" {% if details.0 == 'cat' %} checked {% endif %} />
+              <label for="cat">Cat</label>
+            </td></tr>
+
+            <tr><td>Breed</td><td>
+              <!-- Dog breed options -->
+              <select name="breeds_dog" id="breeds_dog" {% if details.0 != 'dog' %} style="display:none;" {% endif %}>
+                <option value="Indian Pariah" {% if details.1 == "Indian Pariah" %} selected {% endif %}>Indian Pariah</option>
+                <option value="Labrador" {% if details.1 == "Labrador" %} selected {% endif %}>Labrador</option>
+                <option value="German Shepherd" {% if details.1 == "German Shepherd" %} selected {% endif %}>German Shepherd</option>
+                <option value="Golden Retriever" {% if details.1 == "Golden Retriever" %} selected {% endif %}>Golden Retriever</option>
+                <option value="Pomeranian" {% if details.1 == "Pomeranian" %} selected {% endif %}>Pomeranian</option>
+                <option value="Dachshund" {% if details.1 == "Dachshund" %} selected {% endif %}>Dachshund</option>
+                <option value="Beagle" {% if details.1 == "Beagle" %} selected {% endif %}>Beagle</option>
+                <option value="Boxer" {% if details.1 == "Boxer" %} selected {% endif %}>Boxer</option>
+                <option value="Pug" {% if details.1 == "Pug" %} selected {% endif %}>Pug</option>
+                <option value="Dalmatian" {% if details.1 == "Dalmatian" %} selected {% endif %}>Dalmatian</option>
+                <option value="Indian Spitz" {% if details.1 == "Indian Spitz" %} selected {% endif %}>Indian Spitz</option>
+                <option value="Rajapalayam" {% if details.1 == "Rajapalayam" %} selected {% endif %}>Rajapalayam</option>
+                <option value="other_drop" {% if details.1 == "other_drop" %} selected {% endif %}>Other</option>
+              </select>
+
+              <!-- Cat breed options -->
+              <select name="breeds_cat" id="breeds_cat" {% if details.0 != 'cat' %} style="display:none;" {% endif %}>
+                <option value="Indian Shorthair" {% if details.1 == "Indian Shorthair" %} selected {% endif %}>Indian Shorthair</option>
+                <option value="Persian" {% if details.1 == "Persian" %} selected {% endif %}>Persian</option>
+                <option value="Siamese" {% if details.1 == "Siamese" %} selected {% endif %}>Siamese</option>
+                <option value="Maine Coon" {% if details.1 == "Maine Coon" %} selected {% endif %}>Maine Coon</option>
+                <option value="Bengal" {% if details.1 == "Bengal" %} selected {% endif %}>Bengal</option>
+                <option value="British Shorthair" {% if details.1 == "British Shorthair" %} selected {% endif %}>British Shorthair</option>
+                <option value="Sphynx" {% if details.1 == "Sphynx" %} selected {% endif %}>Sphynx</option>
+                <option value="Ragdoll" {% if details.1 == "Ragdoll" %} selected {% endif %}>Ragdoll</option>
+                <option value="Other" {% if details.1 == "Other" %} selected {% endif %}>Other</option>
+              </select>
+            </td></tr>
+
+            <tr><td>Name</td><td><input type="text" id="pet_name" name="pet_name" value="{{ details.2 }}" required /></td></tr>
+            <tr><td>Color</td><td><input type="text" id="color" name="color" value="{{ details.3 }}" required /></td></tr>
+            <tr><td>Location</td><td><input type="text" id="location" name="location" value="{{ details.4 }}" required /></td></tr>
+            <tr><td>Date</td><td><input type="date" id="date_time" name="date_time" value="{{ details.5 }}" required /></td></tr>
+            <tr><td></td><td><input type="submit" id="update_button" value="Update"/></td></tr>
+        </tbody>
+    </table>
+  </form>
+{% endif %}
+{% endblock %}

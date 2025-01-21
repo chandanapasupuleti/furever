@@ -1,0 +1,25 @@
+{% extends "furever_app/home.html" %}  <!-- Inheriting the home.html template to use its structure -->
+
+{% block content %}  <!-- This is the block where the page-specific content will be rendered -->
+
+<!-- Check if there are any adoption interest notifications -->
+{% if adoptinterest %}
+    <!-- Loop through each item in the adoptinterest list -->
+    {% for i in adoptinterest %}
+    
+        <!-- Display the adoption interest message -->
+        <p style="font-size: 16px; color: #333; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+            <!-- Display the adopter's name and the pet they want to adopt -->
+            {{ i.0 }} likes to adopt {{ i.1 }}
+        </p>
+        
+    {% endfor %}
+{% else %}
+    <!-- If no adoption interests are available, show a message -->
+    <p style="font-size: 16px; color: #999; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+        No Notification
+    </p>
+{% endif %}
+
+{% endblock %} 
+

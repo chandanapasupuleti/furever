@@ -1,0 +1,6 @@
+{% extends "furever_app/home.html" %} {% block content %}
+<h2>Home</h2>
+<a href="{% url 'download_file' filename='Cat_Beginner_Guide.pdf' %}">A Beginner’s Guide to Having a Pet Cat</a>
+<br><br>
+<a href="{% url 'download_file' filename='Dog_Beginner_Guide.pdf' %}">A Beginner’s Guide to Having a Pet Dog</a>
+{% endblock %}

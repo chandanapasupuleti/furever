@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <title>Profile</title>
+    <script>
+      // Event listener to call view_func when the DOM is fully loaded
+      document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+          view_func(); // Set the profile form to view-only mode when the page loads
+        },
+        false
+      );
+
+      // Function to enable the edit mode 
+      function edit_func() {
+        document.getElementById("name").removeAttribute("readonly"); // Enable name field for editing
+        document.getElementById("email").removeAttribute("readonly"); // Enable email field for editing
+        document.getElementById("locality").removeAttribute("readonly"); // Enable locality field for editing
+        document.getElementById("edit").style.backgroundColor = "green"; // Change background color of edit button
+        document.getElementById("view").style.backgroundColor = ""; // Reset view button background color
+      }
+
+      // Function to set the profile form to view-only mode
+      function view_func() {
+        document.getElementById("name").setAttribute("readonly", ""); // Set name field to read-only
+        document.getElementById("email").setAttribute("readonly", ""); // Set email field to read-only
+        document.getElementById("locality").setAttribute("readonly", ""); // Set locality field to read-only
+        document.getElementById("view").style.backgroundColor = "green"; // Change background color of view button
+        document.getElementById("edit").style.backgroundColor = ""; // Reset edit button background color
+      }
+    </script>
+  </head>
+
+  <body>
+    <h2>Profile</h2>
+    <!-- Buttons to toggle between view and edit modes -->
+    <button id="view" onclick="view_func()">View</button>
+    <button id="edit" onclick="edit_func()">Edit</button><br />
+    
+    {% load static %}
+    <!-- Image of the person -->
+    <img
+      src="{% static 'person.jpg' %}"
+      alt="person_image"
+      id="person_img"
+      width="150px"
+      height="150px"
+    />
+
+    <form>
+      <!-- Input field for Name -->
+      <label for="name">Name</label><br />
+      <input type="text" id="name" name="form" value="Chandana" readonly /><br /><br />
+
+      <!-- Input field for Email -->
+      <label for="email">E-mail</label><br />
+      <input type="email" id="email" name="form" value="chandana@dandana.com" readonly /><br /><br />
+
+      <!-- Input field for Locality -->
+      <label for="locality">Locality</label><br />
+      <input type="text" id="locality" name="form" value="Nellore" readonly /><br /><br />
+
+      <!-- Age Group section with radio buttons -->
+      <fieldset>
+        <legend>Age group</legend>
+
+        <!-- Radio button for different age groups -->
+        <input type="radio" id="18-24" name="age" value="18-24" />
+        <label for="18-24">18-24</label><br />
+
+       
+        <input type="radio" id="25-34" name="age" value="25-34" />
+        <label for="25-34">25-34</label><br />
+
+  
+        <input type="radio" id="35-44" name="age" value="35-44" />
+        <label for="35-44">35-44</label><br />
+
+ 
+        <input type="radio" id="45-54" name="age" value="45-54" />
+        <label for="45-54">45-54</label><br />
+
+        
+        <input type="radio" id="55-64" name="age" value="55-64" />
+        <label for="55-64">55-64</label><br />
+
+        
+        <input type="radio" id="65" name="age" value="65" />
+        <label for="65">65+</label><br />
+      </fieldset>
+
+      <!-- Submit button to update profile -->
+      <input type="submit" value="Update" />
+    </form>
+
+    {{all_det.username}}
+  </body>
+</html>

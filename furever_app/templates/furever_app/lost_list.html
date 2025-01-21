@@ -1,0 +1,281 @@
+{% extends "furever_app/home.html" %} {% block content %}
+<h2>Lost Pets</h2>
+<style>
+/* General styles for the form */
+form {
+  width: 800px; /* Set a fixed width */
+  margin: 20px 0; /* Margin on top and bottom */
+  padding: 20px; /* Padding inside the form */
+  border: 1px solid #ccc; /* Light border for definition */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  float: left; /* Align to the left side of the page */
+}
+
+a {
+    color: black !important; /* Forces the link color to black */
+  }
+
+/* Table styles */
+table {
+  border-collapse: collapse; /* Collapse borders */
+  width: 50%; /* Set width of the table */
+  margin: 20px 0; /* Margin for spacing */
+}
+
+td {
+  padding: 10px; /* Padding inside table cells */
+}
+
+th,
+td {
+  text-align: left; /* Left-align text */
+  border: 1px solid grey; /* Border for table cells */
+}
+
+th {
+  background-color: #f2f2f2; /* Background for table headers */
+}
+
+/* Responsive adjustments for the form */
+@media (max-width: 600px) {
+  form {
+    width: 100%; /* Make it responsive on smaller screens */
+    padding: 15px; /* Reduced padding for smaller screens */
+  }
+
+  input[type="submit"] {
+    font-size: 14px; /* Smaller font size for buttons */
+  }
+}
+
+</style>
+<script>
+  // Event listener for when the page content is fully loaded
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+      // Initialize view function to show the details view initially
+      view_func();
+
+      // Query all radio buttons 
+      const radioButtons = document.querySelectorAll('input[type="radio"]');
+      
+      // Add event listeners to each radio button to show/hide appropriate breed options
+      radioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("change", function (event) {
+          const selectedOption = event.target.value; // Get selected radio button value
+
+          // Show dog breed options if dog is selected, hide cat breed options
+          if (selectedOption === "dog") {
+            document.getElementById("breeds_dog").style.display = "inline";
+            document.getElementById("breeds_cat").style.display = "none";
+            document.getElementById("breeds_dog").value = 'Indian Pariah'; // Set default dog breed
+          } else {
+            // Show cat breed options if cat is selected, hide dog breed options
+            document.getElementById("breeds_cat").style.display = "inline";
+            document.getElementById("breeds_dog").style.display = "none";
+            document.getElementById("breeds_cat").value = 'Indian Shorthair'; // Set default cat breed
+          }
+        });
+      });
+
+      // Check the selected radio button on page load and display corresponding breed options
+      if (document.getElementById('dog').checked) {
+        document.getElementById("breeds_dog").style.display = "inline";
+        document.getElementById("breeds_cat").style.display = "none";
+      } else if (document.getElementById('cat').checked) {
+        document.getElementById("breeds_cat").style.display = "inline";
+        document.getElementById("breeds_dog").style.display = "none";
+      }
+    });
+
+    // Function to format the date into a YYYY-MM-DD format
+    function formatDate(inputDate) {
+      var dateObj = new Date(inputDate); // Create Date object from input string
+      var year = dateObj.getFullYear();
+      var month = ('0' + (dateObj.getMonth() + 1)).slice(-2); // Ensure month is 2 digits
+      var day = ('0' + dateObj.getDate()).slice(-2); // Ensure day is 2 digits
+      return year + '-' + month + '-' + day; // Return formatted date string
+    }
+
+    // Function to switch from view mode to edit mode
+    function edit_func() {
+      // Hide the view form and show the edit form
+      document.getElementById("view_form").style.display = "none";
+      document.getElementById("edit_form").style.display = "block";
+      
+      // Set the value of the date input field to the formatted date
+      document.getElementById("date_time").value = formatDate('{{details.5}}');
+      
+      // Check the category (dog or cat) and set the corresponding breed dropdown to be visible
+      document.getElementById('{{details.0}}').checked = true; // Set category (dog/cat)
+      if (document.getElementById('dog').checked) {
+        document.getElementById("breeds_dog").style.display = "inline";
+        document.getElementById("breeds_cat").style.display = "none";
+      } else if (document.getElementById('cat').checked) {
+        document.getElementById("breeds_cat").style.display = "inline";
+        document.getElementById("breeds_dog").style.display = "none";
+      }
+      
+      // Set breed dropdown value to the breed specified in the details
+      document.getElementById("breeds_dog").value = '{{details.1}}';
+      document.getElementById("breeds_cat").value = '{{details.1}}';
+      
+      // Show the update button
+      document.getElementById("update_button").style.display = "inline";
+    }
+
+    // Function to switch back to view mode from edit mode
+    function view_func() {
+      // Hide the edit form and show the view form
+      document.getElementById("edit_form").style.display = "none";
+      document.getElementById("view_form").style.display = "block";
+      // Hide the update button
+      document.getElementById("update_button").style.display = "none";
+    }
+</script>
+
+{% if details.8 == details.9 %}
+<!-- If the post owner and user are the same, show View and Edit buttons -->
+<button id="view" onclick="view_func()">View</button>
+<button id="edit" onclick="edit_func()">Edit</button>
+{% else %}
+  {% if details.10 == 'n' %}
+    <!-- If the post is not marked as found, show the 'I found' button -->
+    <form id="found_form" method="POST" action="{% url 'lost_update' id=details.7 %}">
+      {% csrf_token %}
+      <input type="text" hidden id="found_id" name="found_id" value={{details.7}}>
+      <input type="text" hidden id="found_username" name="found_username" value={{details.9}}>
+      <input type="text" hidden id="post_owner" name="post_owner" value={{details.8}}>
+      <button type='submit' id="found_btn" value="I found">I found</button>
+    </form>
+  {% else %}
+    <!-- If the post is marked as found, show 'Undo found' button -->
+    <form id="undointerest_form" method="POST" action="{% url 'lost_update' id=details.7 %}">
+      {% csrf_token %}
+      <button type='submit' id="undointerest_btn" value="Undo Interested">Undo found</button>
+    </form>
+  {% endif %}
+{% endif %}
+
+<!-- View form to display pet details -->
+<form id='view_form'>
+    <img src="data:image/jpeg;base64,{{ details.6 }}" alt="pet_img" id="pet_img" width="150px" height="150px" /><br><br>
+    <table>
+      <tbody>
+        <tr>
+          <td>Category</td>
+          <td>{{details.0}}</td>
+        </tr>
+        <tr>
+          <td>Breed</td>
+          <td>{{details.1}}</td>
+        </tr>
+        <tr>
+          <td>Color</td>
+          <td>{{ details.2 }}</td>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>{{ details.3 }}</td>
+        </tr>
+        <tr>
+          <td>Location</td>
+          <td>{{ details.4 }}</td>
+        </tr>
+        <tr>
+          <td>date_time</td>
+          <td>{{ details.5 }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Posted by {{details.8}}</p>
+</form>
+
+{% if details.8 == details.9 %}
+<!-- Edit form to allow user to edit pet details -->
+<form id="edit_form" method="POST" enctype="multipart/form-data" action="{% url 'lost_update' id=details.7 %}">
+    {% csrf_token %}
+    <img src="data:image/jpeg;base64,{{ details.6 }}" alt="pet_img" id="pet_img" width="150px" height="150px" /><br><br>
+    <input type="file" id="pet_pic" name="pet_pic" >
+    <table>
+        <tbody>
+            <tr>
+              <td>Category</td>
+              <td>
+                <input type="radio" id="dog" name="categ" value="dog" checked />
+                <label for="dog">Dog</label><br />
+                <input type="radio" id="cat" name="categ" value="cat" />
+                <label for="cat">Cat</label>
+              </td>
+            </tr>
+            <tr>
+                <td>Breed</td>
+                <td>
+                  <!-- Dog breed options -->
+                  <select name="breeds_dog" id="breeds_dog">
+                    <option value="Indian Pariah" selected="selected">Indian Pariah</option>
+                    <option value="Labrador">Labrador</option>
+                    <option value="German Shepherd">German Shepherd</option>
+                    <option value="Golden Retriever">Golden Retriever</option>
+                    <option value="Pomeranian">Pomeranian</option>
+                    <option value="Dachshund">Dachshund</option>
+                    <option value="Beagle">Beagle</option>
+                    <option value="Boxer">Boxer</option>
+                    <option value="Pug">Pug</option>
+                    <option value="Dalmatian">Dalmatian</option>
+                    <option value="Indian Spitz">Indian Spitz</option>
+                    <option value="Rajapalayam">Rajapalayam</option>
+                    <option value="other_drop">Other</option>
+                  </select>
+
+                  <!-- Cat breed options -->
+                  <select name="breeds_cat" id="breeds_cat">
+                    <option value="Indian Shorthair" selected="selected">Indian Shorthair</option>
+                    <option value="Persian">Persian</option>
+                    <option value="Siamese">Siamese</option>
+                    <option value="Maine Coon">Maine Coon</option>
+                    <option value="Bengal">Bengal</option>
+                    <option value="British Shorthair">British Shorthair</option>
+                    <option value="Sphynx">Sphynx</option>
+                    <option value="Ragdoll">Ragdoll</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td><input type="text" id="pet_name" name="pet_name" value="{{ details.2 }}" required /></td>
+            </tr>
+            <tr>
+                <td>Color</td>
+                <td><input type="text" id="color" name="color" value="{{ details.3 }}" required /></td>
+            </tr>
+            <tr>
+                <td>Location</td>
+                <td><input type="text" id="location" name="location" value="{{ details.4 }}" required /></td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td><input type="date" id="date_time" name="date_time" value="{{ details.5 }}" required /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" id="update_button" value="Update"/></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+{% endif %}
+
+
+
+{% endblock %}
+          
+                    
+
+          
+          
+        

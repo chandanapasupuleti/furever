@@ -1,0 +1,42 @@
+{% extends "furever_app/home.html" %}
+
+{% block content %}
+    <!-- Main content container with padding and background color -->
+    <div style="padding: 20px; font-family: Arial, sans-serif; background-color: #f8f9fa;">
+        
+        <!-- Heading for the forum page -->
+        <h2 style="font-size: 24px; color: #333; margin-bottom: 20px;">Forum</h2>
+        
+        <!-- Link to add a new post  -->
+        <a href="add_post" style="display: inline-block; padding: 10px 15px; font-size: 16px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
+            Add New Post
+        </a>
+
+        <!-- Container for the list of posts -->
+        <div class="posts" style="background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 15px;">
+            
+            <!-- Loop through the 'posts' list and display each post -->
+            {% for post in posts %}
+                <!-- Link to each individual post with the post's ID as part of the URL -->
+                <a href="post/{{ post.5 }}" style="text-decoration: none; color: black !important;"> <!-- Set color to black -->
+                    <div class="post" style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #fafafa; transition: background-color 0.3s;">
+                        
+                        <!-- Post title with larger font size and margin -->
+                        <h2 style="font-size: 20px; color: #333; margin: 0 0 10px;">{{ post.0 }}</h2>
+                        
+                        <!-- Post metadata showing the author and posting date -->
+                        <small style="color: #888;">Posted by {{ post.2 }} on {{ post.3 }}</small>
+                    </div>
+                </a>
+                
+                <!-- Horizontal line separator between posts -->
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+            {% empty %}
+                <!-- Message shown if there are no posts -->
+                <p style="font-size: 16px; color: #666;">No posts have been made yet. Be the first to post!</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+

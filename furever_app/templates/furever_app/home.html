@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #218838; 
+            color: white; /* White text */
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        /* Navigation Bar Styles */
+        nav {
+            background-color: #fff;
+            border-bottom: 2px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        a:hover {
+            color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* User information styling */
+        .user-info {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #218838;
+        }
+
+        /* Content area styling */
+        .content {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Responsive Styles for Mobile */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            ul {
+                padding: 0;
+            }
+
+            li {
+                display: inline-block;
+                margin: 0 10px;
+            }
+
+            .content {
+                padding: 15px;
+                max-width: 100%;
+            }
+        }
+
+        /* Mobile-first Styling for Extra Small Screens */
+        @media (max-width: 480px) {
+            ul {
+                display: block;
+                text-align: left;
+                padding-left: 15px;
+            }
+
+            li {
+                display: block;
+                margin: 8px 0;
+            }
+
+            .user-info {
+                font-size: 1em;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Furever</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'lost' %}">Lost</a></li>
+            <li><a href="{% url 'found' %}">Found</a></li>
+            <li><a href="{% url 'adopt' %}">Adopt</a></li>
+            <li><a href="{% url 'forum' %}">Forum</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'notification' %}">Notification</a></li>
+            <li><a href="{% url 'logoutview' %}">Logout</a></li>
+            <li class="user-info">{{ user }}</li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        {% block content %} 
+        {% endblock %}
+    </div>
+
+</body>
+</html>
+
+
+

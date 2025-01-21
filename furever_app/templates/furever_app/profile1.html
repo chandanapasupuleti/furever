@@ -1,0 +1,226 @@
+{% extends "furever_app/home.html" %} {% block content %}
+
+<style>
+/* General styles for the form */
+a {
+    color: black !important; /* Forces the link color to black */
+}
+
+/* Positioning the form */
+.form-container {
+    width: 800px; /* Set a fixed width */
+    margin: 20px 0; /* Margin on top and bottom */
+    padding: 20px; /* Padding inside the form */
+    border: 1px solid #ccc; /* Light border for definition */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    float: left; /* Align to the left side of the page */
+}
+
+/* Flex container for profile picture and form */
+.profile-form-container {
+    display: flex;
+    align-items: flex-start; /* Align items to the start */
+    margin-bottom: 20px; /* Space below the container */
+}
+
+/* Profile image styles */
+#person_img {
+    margin-right: 20px; /* Space between image and form */
+    width: 150px; /* Set width of the image */
+    height: 150px; /* Set height of the image */
+}
+
+/* Table styles (if applicable) */
+table {
+    border-collapse: collapse; /* Collapse borders */
+    width: 100%; /* Set width of the table */
+    margin: 20px 0; /* Margin for spacing */
+}
+
+td {
+    padding: 10px; /* Padding inside table cells */
+}
+
+th, td {
+    text-align: left; /* Left-align text */
+    border: 1px solid grey; /* Border for table cells */
+}
+
+th {
+    background-color: #f2f2f2; /* Background for table headers */
+}
+
+/* Responsive adjustments for the form */
+@media (max-width: 600px) {
+    .form-container {
+        width: 100%; /* Make it responsive on smaller screens */
+        padding: 15px; /* Reduced padding for smaller screens */
+    }
+
+    input[type="submit"] {
+        font-size: 14px; /* Smaller font size for buttons */
+    }
+}
+
+</style>
+
+<script>
+  // Event listener that triggers when the DOM is fully loaded
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+      // Call view_func to set the profile in view-only mode initially
+      view_func();
+
+      // Set the radio button for age group based on the value stored in 'age_bfr'
+      age_val = document.getElementById('age_bfr').value;
+      document.getElementById(age_val).checked = true;
+
+      // Event listener for profile picture upload
+      document.getElementById('profpic').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const imgElement = document.getElementById('person_img');
+            imgElement.src = e.target.result; // Set the image preview to the uploaded file
+            imgElement.style.display = 'block'; // Show the image
+          }
+          reader.readAsDataURL(file); // Convert the image to a base64 URL
+        }
+      });
+
+      // Event listener to update the hidden 'age_bfr' input with the selected age group
+      document.querySelectorAll("input[name='age']").forEach(function(element) {
+        element.addEventListener('change', function(){
+          document.getElementById('age_bfr').value = String(event.target.id); // Update age_bfr with the ID of the selected radio button
+        });
+      });
+
+      // If there's an error message in the 'usr_err' element, display it in an alert
+      if (document.getElementById('usr_err').textContent != '') {
+        alert(document.getElementById('usr_err').textContent);
+      }
+
+      // Check if the profile image source is empty and set it to a default image if it is
+      var imgsrc = document.getElementById("person_img").src;
+      if (imgsrc.split(",")[1] === '') {
+        document.getElementById("person_img").src = 'static/person.jpg';
+      }
+    },
+    false
+  );
+
+  // Function to enable editing of profile fields and show edit-related elements
+  function edit_func() {
+    document.getElementById("name").removeAttribute("readonly"); // Make the name field editable
+    document.getElementById("email").removeAttribute("readonly"); // Make the email field editable
+    document.getElementById("locality").removeAttribute("readonly"); // Make the locality field editable
+    document.getElementById("edit").style.backgroundColor = "green"; // Highlight the 'Edit' button
+    document.getElementById("view").style.backgroundColor = ""; // Reset 'View' button style
+
+    // Hide the readonly age field and show the editable age group radio buttons
+    document.getElementById("age_bfr").style.display = "none";
+    document.getElementById("age_left_aligned").style.display = "block";
+    
+    // Display options for profile picture change
+    document.getElementById("remove_profpic").style.display = "block"; // Show 'Remove' button
+    document.getElementById("profpic").style.display = "block"; // Show the file input for profile picture
+    document.getElementById("prof_lbl").style.display = "block"; // Show 'Profile picture' label
+    document.getElementById("update_button").style.display = "block"; // Show the 'Update' button
+  }
+
+  // Function to switch back to the view-only mode
+  function view_func() {
+    document.getElementById("name").setAttribute("readonly", ""); // Make the name field readonly
+    document.getElementById("email").setAttribute("readonly", ""); // Make the email field readonly
+    document.getElementById("locality").setAttribute("readonly", ""); // Make the locality field readonly
+    document.getElementById("view").style.backgroundColor = "green"; // Highlight the 'View' button
+    document.getElementById("edit").style.backgroundColor = ""; // Reset 'Edit' button style
+
+    // Hide the editable age group radio buttons and show the readonly field
+    document.getElementById("age_left_aligned").style.display = "none";
+    document.getElementById("age_bfr").style.display = "block";
+
+    // Hide options for profile picture change
+    document.getElementById("remove_profpic").style.display = "none"; // Hide 'Remove' button
+    document.getElementById("profpic").style.display = "none"; // Hide the file input for profile picture
+    document.getElementById("prof_lbl").style.display = "none"; // Hide 'Profile picture' label
+    document.getElementById("update_button").style.display = "none"; // Hide the 'Update' button
+  }
+
+  // Function to remove the profile picture
+  function remove_func() {
+    image = document.getElementById('person_img');
+    image.src = '/static/person.jpg'; // Set the image to the default one
+    document.getElementById('profpic').value = ''; // Clear the file input
+    document.getElementById('remove_state').textContent = 1; // Set the 'remove_state' to indicate the picture is removed
+  }
+</script>
+
+<h2>Profile</h2>
+<button id="view" onclick="view_func()">View</button>
+<button id="edit" onclick="edit_func()">Edit</button><br />
+
+<!-- Profile image with a fallback to a default image -->
+<img src="data:image/jpeg;base64,{{ all_det.0.3 }}" alt="person_image" id="person_img" width="150px" height="150px" />
+
+<!-- Form for updating the profile -->
+<form method="POST" enctype="multipart/form-data" action="{% url 'profilechange' %}">
+  {% csrf_token %}
+
+  <!-- Input for uploading profile picture -->
+  <label for="name" id="prof_lbl">Profile picture</label><br />
+  <input type="file" id="profpic" name="profpic" accept="image/*" /> <!-- File input for profile picture -->
+  
+  <!-- Button to remove the profile picture -->
+  <input type="button" id='remove_profpic' name="remove_profpic" onclick="remove_func()" value="Remove" />
+  <input type="text" id="remove_state" name="remove_state" hidden></span><br />
+  
+  <!-- Input for name -->
+  <label for="name">Name</label><br />
+  <input type="text" id="name" name="name" value="{{ all_det.0.0 }}" required readonly />
+  <span id='usr_err' hidden >{{ err }}</span> <!-- Error message if applicable -->
+  <br /><br />
+  
+  <!-- Input for email -->
+  <label for="email" required>E-mail</label><br />
+  <input type="email" id="email" name="email" value="{{ email_id.0.0 }}" required readonly />
+  <br /><br />
+  
+  <!-- Input for locality -->
+  <label for="locality">Locality</label><br />
+  <input type="text" id="locality" name="locality" value="{{ all_det.0.1 }}" readonly required /><br /><br />
+
+  <!-- Age group selection -->
+  <label for="age">Age Group</label><br />
+  <input type="text" id="age_bfr" name="age_bfr" value="{{ all_det.0.2 }}" required readonly />
+
+  <div id="age_left_aligned">
+    <!-- Radio buttons for selecting an age group -->
+    <input type="radio" id="18-24" name="age" value="18-24" />
+    <label for="18-24">18-24</label><br />
+
+    <input type="radio" id="25-34" name="age" value="25-34" />
+    <label for="25-34">25-34</label><br />
+
+    <input type="radio" id="35-44" name="age" value="35-44" />
+    <label for="35-44">35-44</label><br />
+
+    <input type="radio" id="45-54" name="age" value="45-54" />
+    <label for="45-54">45-54</label><br />
+
+    <input type="radio" id="55-64" name="age" value="55-64" />
+    <label for="55-64">55-64</label><br />
+
+    <input type="radio" id="65+" name="age" value="65+" />
+    <label for="65">65+</label><br />
+  </div>
+  <br>
+
+  <!-- Submit button to update profile -->
+  <input id="update_button" type="submit" name="submit" value="Update" />
+</form>
+{% endblock %}
